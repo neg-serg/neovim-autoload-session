@@ -1,21 +1,21 @@
-let g:autoload_session_dir = $XDG_CONFIG_HOME . "/nvim/sessions"
-let g:autoload_session_file = g:autoload_session_dir . "/default.vim"
+let s:autoload_session_dir = $XDG_CONFIG_HOME . "/nvim/sessions"
+let s:autoload_session_file = s:autoload_session_dir . "/default.vim"
 
 function! MakeSession()
-    if (filewritable(g:autoload_session_dir) != 2)
-        exe 'silent !mkdir -p ' g:autoload_session_dir
+    if (filewritable(s:autoload_session_dir) != 2)
+        execute 'silent !mkdir -p ' s:autoload_session_dir
         redraw!
     endif
-    let b:filename = g:autoload_session_dir . '/default.vim'
-    exe "mksession! " . b:filename
+    let b:filename = s:autoload_session_dir . '/default.vim'
+    execute "mksession! " . b:filename
 endfunction
 
 function! LoadSession()
     call s:WipeBuffersWithoutFiles()
-    if (filereadable(g:autoload_session_file))
-        exe 'source ' g:autoload_session_file
+    if (filereadable(s:autoload_session_file))
+        execute 'source ' s:autoload_session_file
     else
-        echo "No session loaded."
+        echomsg "No session loaded."
     endif
 endfunction
 
@@ -24,10 +24,9 @@ function s:WipeBuffersWithoutFiles()
         \'empty(getbufvar(v:val, "&buftype")) && '.
         \'!filereadable(bufname(v:val))')
     if !empty(bufs)
-        execute 'bwipeout' join(bufs)
+        execute 'silent bwipeout' join(bufs)
     endif
 endfunction
 
 au VimEnter * nested :call LoadSession()
 au VimLeave * :call MakeSession()
-
